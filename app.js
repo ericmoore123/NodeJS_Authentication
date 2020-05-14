@@ -1,6 +1,12 @@
 const express = require('express')
 const expressLayouts = require('express-ejs-layouts');
 const app = express();
+const flash = require('connect-flash');
+const session = require('express-session');
+const passport = require('passport')
+
+// Passport config require
+require('./config/passport')(passport);
 
 // Database 
 const mongoose = require('mongoose');
@@ -14,6 +20,26 @@ mongoose.connect(db, {useNewUrlParser: true})
     .catch((err) => {
         console.log("Error connecting to database")
     });
+
+// Express Session Data
+app.use(session({
+    secret: 'spooky secret',
+    resave: false,
+    saveUninitialized: true
+}));
+    // Connect flash 
+app.use(flash());
+
+// Passport Usage Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Global Variables
+app.use((req, res, next) => {
+    res.locals.seccess_message = req.flash('success_message');
+    res.locals.error_message = req.flash('error_message');
+    next()
+});
 
 // EJS
 app.use(expressLayouts);

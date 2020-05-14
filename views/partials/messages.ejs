@@ -4,3 +4,15 @@
     </div>
     <% }); %> 
 <% } %>
+
+<% if(success_message != '') { %> 
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success_message %>
+    </div>
+<% } %> 
+
+<% if(error_message != '') { %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <%= error_message %>
+    </div>
+<% } %> 

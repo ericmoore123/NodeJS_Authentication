@@ -60,8 +60,25 @@ router.post('/register', (req, res) => {
                     password
                 });
 
-                console.log(newUser)
-                res.send('Pass!')
+                // console.log(newUser)
+                // res.send('Pass!')
+                
+                // Encrypt Passwords
+                bcrypt.genSalt(10, (error, salt) => {
+                    bcrypt.hash(newUser.password, salt, (error, hashPassword) => {
+                        if(error){
+                            throw error;
+                        }
+                        // Set password to new hashed password
+                        newUser.password = hashPassword; 
+                        newUser.save()
+                            .then( (user) => {
+                                req.flash('success_message', "Successfully Registered!");
+                                res.redirect('/users/login')
+                            })
+                            .catch( (error) => console.log(error) );
+                    })
+                })
             }
         });
     }
