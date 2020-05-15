@@ -1,5 +1,6 @@
 const express = require('express');
 const router  = express.Router();
+const passport = require('passport');
 
 // Password Encryption
 const bcrypt = require('bcryptjs')
@@ -83,6 +84,22 @@ router.post('/register', (req, res) => {
         });
     }
 
+});
+
+//Login Logic
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', { 
+        successRedirect: '/dashboard',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    })(req, res, next);
+});
+
+// Handle Logouts
+router.get('/logout', (req, res) => {
+    req.logout();
+    req.flash('success_message', "You have logged out successfully!");
+    res.redirect("/users/login");
 });
 
 module.exports = router;
